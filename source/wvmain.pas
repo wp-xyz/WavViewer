@@ -25,6 +25,7 @@ type
     edBitsPerSample: TEdit;
     edByteValue: TEdit;
     edShortIntValue: TEdit;
+    edCurrentOffset: TEdit;
     edWordValue: TEdit;
     edSmallIntValue: TEdit;
     edLongIntValue: TEdit;
@@ -34,6 +35,7 @@ type
     edByteRate: TEdit;
     FilesPanel: TPanel;
     ImageList: TImageList;
+    Label1: TLabel;
     Label10: TLabel;
     Label2: TLabel;
     Label3: TLabel;
@@ -114,9 +116,11 @@ begin
   FHexEditor.Parent := pgHex;
   FHexEditor.Align := alClient;
   FHexEditor.BorderSpacing.Around := 6;
-  FHexEditor.Font.Size := 9;
+  FHexEditor.Font.Size := 10;
   FHexEditor.ReadOnlyView := true;
   FHexEditor.ReadOnlyFile := true;
+  FHexEditor.ShowRuler := true;
+  FHexEditor.BytesPerColumn := 1;
   FHexEditor.OnSelectionChanged := @HexSelectionChangedHandler;
 
   ChartToolset1ZoomMouseWheelTool1.Zoomfactor := 1.1;
@@ -144,6 +148,8 @@ var
   lw: LongWord;
 begin
   P := FHexEditor.GetCursorPos;
+
+  edCurrentOffset.Text := IntToStr(P);
 
   if P + 1 < FHexEditor.DataSize then
   begin

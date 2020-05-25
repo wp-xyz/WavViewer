@@ -70,12 +70,12 @@ object MainForm: TMainForm
     Height = 618
     Top = 6
     Width = 1085
-    ActivePage = pgHeader
+    ActivePage = pgHex
     Align = alClient
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    TabIndex = 0
+    TabIndex = 2
     TabOrder = 1
     object pgHeader: TTabSheet
       Caption = 'Header'
@@ -361,24 +361,24 @@ object MainForm: TMainForm
     object pgHex: TTabSheet
       Caption = 'Hex'
       ClientHeight = 590
-      ClientWidth = 818
+      ClientWidth = 1077
       object Panel2: TPanel
         Left = 6
         Height = 67
         Top = 517
-        Width = 806
+        Width = 1065
         Align = alBottom
         AutoSize = True
         BorderSpacing.Around = 6
         BevelOuter = bvNone
         ClientHeight = 67
-        ClientWidth = 806
+        ClientWidth = 1065
         TabOrder = 0
         object Label2: TLabel
           AnchorSideTop.Control = edByteValue
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = edByteValue
-          Left = 19
+          Left = 123
           Height = 15
           Top = 21
           Width = 23
@@ -392,24 +392,27 @@ object MainForm: TMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edByteValue
           AnchorSideTop.Side = asrBottom
-          Left = 50
+          Left = 154
           Height = 23
           Top = 44
           Width = 96
           Alignment = taRightJustify
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
+          ReadOnly = True
           TabOrder = 0
           Text = 'edShortIntValue'
         end
         object Label3: TLabel
-          AnchorSideLeft.Control = Panel2
+          AnchorSideLeft.Control = edCurrentOffset
+          AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edShortIntValue
           AnchorSideTop.Side = asrCenter
-          Left = 0
+          Left = 104
           Height = 15
           Top = 48
           Width = 42
+          BorderSpacing.Left = 8
           Caption = 'ShortInt'
           ParentColor = False
         end
@@ -417,12 +420,13 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = edShortIntValue
           AnchorSideTop.Control = Label8
           AnchorSideTop.Side = asrBottom
-          Left = 50
+          Left = 154
           Height = 23
           Top = 17
           Width = 96
           Alignment = taRightJustify
           BorderSpacing.Top = 2
+          ReadOnly = True
           TabOrder = 1
           Text = 'edByteValue'
         end
@@ -431,7 +435,7 @@ object MainForm: TMainForm
           AnchorSideTop.Control = edWordValue
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = edWordValue
-          Left = 184
+          Left = 288
           Height = 15
           Top = 21
           Width = 29
@@ -445,12 +449,13 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = edSmallIntValue
           AnchorSideTop.Control = Label9
           AnchorSideTop.Side = asrBottom
-          Left = 221
+          Left = 325
           Height = 23
           Top = 17
           Width = 96
           Alignment = taRightJustify
           BorderSpacing.Top = 2
+          ReadOnly = True
           TabOrder = 2
           Text = 'edWordValue'
         end
@@ -459,7 +464,7 @@ object MainForm: TMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edSmallIntValue
           AnchorSideTop.Side = asrCenter
-          Left = 170
+          Left = 274
           Height = 15
           Top = 48
           Width = 43
@@ -472,13 +477,14 @@ object MainForm: TMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edWordValue
           AnchorSideTop.Side = asrBottom
-          Left = 221
+          Left = 325
           Height = 23
           Top = 44
           Width = 96
           Alignment = taRightJustify
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
+          ReadOnly = True
           TabOrder = 3
           Text = 'edSmallIntValue'
         end
@@ -489,7 +495,7 @@ object MainForm: TMainForm
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = Label7
           AnchorSideRight.Side = asrBottom
-          Left = 356
+          Left = 460
           Height = 15
           Top = 48
           Width = 41
@@ -503,13 +509,14 @@ object MainForm: TMainForm
           AnchorSideLeft.Side = asrBottom
           AnchorSideTop.Control = edWordValue
           AnchorSideTop.Side = asrBottom
-          Left = 405
+          Left = 509
           Height = 23
           Top = 44
           Width = 96
           Alignment = taRightJustify
           BorderSpacing.Left = 8
           BorderSpacing.Top = 4
+          ReadOnly = True
           TabOrder = 4
           Text = 'edLongIntValue'
         end
@@ -519,7 +526,7 @@ object MainForm: TMainForm
           AnchorSideTop.Control = edLongWordValue
           AnchorSideTop.Side = asrCenter
           AnchorSideRight.Control = edLongWordValue
-          Left = 341
+          Left = 445
           Height = 15
           Top = 19
           Width = 56
@@ -532,11 +539,12 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = edLongIntValue
           AnchorSideTop.Control = Label10
           AnchorSideTop.Side = asrBottom
-          Left = 405
+          Left = 509
           Height = 23
           Top = 15
           Width = 96
           Alignment = taRightJustify
+          ReadOnly = True
           TabOrder = 5
           Text = 'edLongWordValue'
         end
@@ -544,7 +552,7 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = edByteValue
           AnchorSideLeft.Side = asrCenter
           AnchorSideTop.Control = Panel2
-          Left = 84
+          Left = 188
           Height = 15
           Top = 0
           Width = 28
@@ -555,7 +563,7 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = edWordValue
           AnchorSideLeft.Side = asrCenter
           AnchorSideTop.Control = Panel2
-          Left = 252
+          Left = 356
           Height = 15
           Top = 0
           Width = 34
@@ -566,12 +574,36 @@ object MainForm: TMainForm
           AnchorSideLeft.Control = edLongWordValue
           AnchorSideLeft.Side = asrCenter
           AnchorSideTop.Control = Panel2
-          Left = 436
+          Left = 540
           Height = 15
           Top = 0
           Width = 34
           Caption = '32 bits'
           ParentColor = False
+        end
+        object Label1: TLabel
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = Panel2
+          Left = 0
+          Height = 15
+          Top = 0
+          Width = 76
+          Caption = 'Current offset:'
+          ParentColor = False
+        end
+        object edCurrentOffset: TEdit
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = Label1
+          AnchorSideTop.Side = asrBottom
+          Left = 0
+          Height = 23
+          Top = 17
+          Width = 96
+          Alignment = taRightJustify
+          BorderSpacing.Top = 2
+          ReadOnly = True
+          TabOrder = 6
+          Text = 'edCurrentOffset'
         end
       end
     end
