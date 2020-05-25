@@ -1,0 +1,8 @@
+ID : string[4] = -4
+SubchunkSize : LongInt = 7
+Audioformat : SmallInt = 5
+NumChannels : SmallInt = 5
+SampleRate : LongInt = 7
+ByteRate : LongInt = 7
+BlockAlign : SmallInt = 5
+BitsPerSample : SmallInt = 5

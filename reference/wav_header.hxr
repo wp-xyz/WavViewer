@@ -1,0 +1,3 @@
+ID : string[4] = -4
+ChunkSize : LongInt = 7
+RiffType : string[4] = -4

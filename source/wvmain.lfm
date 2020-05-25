@@ -1,0 +1,632 @@
+object MainForm: TMainForm
+  Left = 360
+  Height = 630
+  Top = 169
+  Width = 1418
+  AllowDropFiles = True
+  Caption = 'MainForm'
+  ClientHeight = 630
+  ClientWidth = 1418
+  OnCreate = FormCreate
+  OnDropFiles = FormDropFiles
+  LCLVersion = '2.1.0.0'
+  object FilesPanel: TPanel
+    Left = 6
+    Height = 618
+    Top = 6
+    Width = 316
+    Align = alLeft
+    BorderSpacing.Left = 6
+    BorderSpacing.Top = 6
+    BorderSpacing.Bottom = 6
+    BevelOuter = bvNone
+    ClientHeight = 618
+    ClientWidth = 316
+    TabOrder = 0
+    object ShellTreeView: TShellTreeView
+      Left = 0
+      Height = 336
+      Top = 0
+      Width = 316
+      Align = alClient
+      FileSortType = fstFoldersFirst
+      HideSelection = False
+      Images = ImageList
+      ReadOnly = True
+      TabOrder = 0
+      OnGetImageIndex = ShellTreeViewGetImageIndex
+      OnGetSelectedIndex = ShellTreeViewGetSelectedIndex
+      Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoReadOnly, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips, tvoThemedDraw]
+      ObjectTypes = [otFolders]
+      ShellListView = ShellListView
+    end
+    object ShellListView: TShellListView
+      Left = 0
+      Height = 277
+      Top = 341
+      Width = 316
+      Align = alBottom
+      Color = clDefault
+      HideSelection = False
+      ReadOnly = True
+      SortType = stText
+      TabOrder = 1
+      OnSelectItem = ShellListViewSelectItem
+      ObjectTypes = [otNonFolders]
+      ShellTreeView = ShellTreeView
+    end
+    object Splitter2: TSplitter
+      Cursor = crVSplit
+      Left = 0
+      Height = 5
+      Top = 336
+      Width = 316
+      Align = alBottom
+      ResizeAnchor = akBottom
+    end
+  end
+  object PageControl1: TPageControl
+    Left = 327
+    Height = 618
+    Top = 6
+    Width = 1085
+    ActivePage = pgHeader
+    Align = alClient
+    BorderSpacing.Top = 6
+    BorderSpacing.Right = 6
+    BorderSpacing.Bottom = 6
+    TabIndex = 0
+    TabOrder = 1
+    object pgHeader: TTabSheet
+      Caption = 'Header'
+      ClientHeight = 590
+      ClientWidth = 1077
+      object Panel1: TPanel
+        AnchorSideLeft.Control = pgHeader
+        AnchorSideTop.Control = pgHeader
+        Left = 8
+        Height = 158
+        Top = 8
+        Width = 422
+        AutoSize = True
+        BorderSpacing.Left = 8
+        BorderSpacing.Top = 8
+        BevelOuter = bvNone
+        ClientHeight = 158
+        ClientWidth = 422
+        TabOrder = 0
+        object lblAudioFormat: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = edAudioFormat
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 4
+          Width = 74
+          Caption = 'Audio format:'
+          FocusControl = edAudioFormat
+          ParentColor = False
+        end
+        object edAudioFormat: TEdit
+          AnchorSideLeft.Control = edNumChannels
+          AnchorSideTop.Control = Panel1
+          AnchorSideRight.Control = edNumChannels
+          AnchorSideRight.Side = asrBottom
+          Left = 142
+          Height = 23
+          Top = 0
+          Width = 201
+          Anchors = [akTop, akLeft, akRight]
+          ReadOnly = True
+          TabOrder = 0
+        end
+        object lblNumChannels: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = edNumChannels
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 31
+          Width = 126
+          Caption = 'Number of channels C):'
+          FocusControl = edNumChannels
+          ParentColor = False
+        end
+        object edNumChannels: TEdit
+          AnchorSideLeft.Control = lblNumChannels
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edAudioFormat
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = lblAudioFormat
+          AnchorSideRight.Side = asrBottom
+          Left = 142
+          Height = 23
+          Top = 27
+          Width = 201
+          BorderSpacing.Left = 16
+          BorderSpacing.Top = 4
+          ReadOnly = True
+          TabOrder = 1
+        end
+        object lblSampleRate: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = edSampleRate
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 58
+          Width = 82
+          Caption = 'Sample rate (S):'
+          FocusControl = edSampleRate
+          ParentColor = False
+        end
+        object edSampleRate: TEdit
+          AnchorSideLeft.Control = edNumChannels
+          AnchorSideTop.Control = edNumChannels
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = edNumChannels
+          AnchorSideRight.Side = asrBottom
+          Left = 142
+          Height = 23
+          Top = 54
+          Width = 201
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
+          ReadOnly = True
+          TabOrder = 2
+        end
+        object lblByteRate: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = edByteRate
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 112
+          Width = 49
+          Caption = 'Byte rate:'
+          FocusControl = edByteRate
+          ParentColor = False
+        end
+        object edByteRate: TEdit
+          AnchorSideLeft.Control = edNumChannels
+          AnchorSideTop.Control = edBitsPerSample
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = edNumChannels
+          AnchorSideRight.Side = asrBottom
+          Left = 142
+          Height = 23
+          Top = 108
+          Width = 201
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
+          ReadOnly = True
+          TabOrder = 3
+        end
+        object lblBlockAlign: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = edBlockAlign
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 139
+          Width = 61
+          Caption = 'Block align:'
+          FocusControl = edBlockAlign
+          ParentColor = False
+        end
+        object edBlockAlign: TEdit
+          AnchorSideLeft.Control = edNumChannels
+          AnchorSideTop.Control = edByteRate
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = edNumChannels
+          AnchorSideRight.Side = asrBottom
+          Left = 142
+          Height = 23
+          Top = 135
+          Width = 201
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
+          ReadOnly = True
+          TabOrder = 4
+        end
+        object lblBitsPerSample: TLabel
+          AnchorSideLeft.Control = Panel1
+          AnchorSideTop.Control = edBitsPerSample
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 85
+          Width = 101
+          Caption = 'Bits per sample (B):'
+          FocusControl = edBitsPerSample
+          ParentColor = False
+        end
+        object edBitsPerSample: TEdit
+          AnchorSideLeft.Control = edNumChannels
+          AnchorSideTop.Control = edSampleRate
+          AnchorSideTop.Side = asrBottom
+          AnchorSideRight.Control = edNumChannels
+          AnchorSideRight.Side = asrBottom
+          Left = 142
+          Height = 23
+          Top = 81
+          Width = 201
+          Anchors = [akTop, akLeft, akRight]
+          BorderSpacing.Top = 4
+          ReadOnly = True
+          TabOrder = 5
+        end
+        object lblFormulaByteRate: TLabel
+          AnchorSideLeft.Control = edByteRate
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edByteRate
+          AnchorSideTop.Side = asrCenter
+          Left = 351
+          Height = 15
+          Top = 112
+          Width = 71
+          BorderSpacing.Left = 8
+          Caption = '= C * S * B / 8'
+          ParentColor = False
+        end
+        object lblFormulaBlockAlign: TLabel
+          AnchorSideLeft.Control = edByteRate
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edBlockAlign
+          AnchorSideTop.Side = asrCenter
+          Left = 351
+          Height = 15
+          Top = 139
+          Width = 54
+          BorderSpacing.Left = 8
+          Caption = '= C * B / 8'
+          ParentColor = False
+        end
+      end
+    end
+    object pgChart: TTabSheet
+      Caption = 'Chart'
+      ClientHeight = 590
+      ClientWidth = 1077
+      object Chart: TChart
+        Left = 5
+        Height = 590
+        Top = 0
+        Width = 929
+        AxisList = <        
+          item
+            Grid.Color = 15658734
+            Grid.Style = psSolid
+            AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Orientation = 900
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Signal'
+            Title.LabelBrush.Style = bsClear
+          end        
+          item
+            Grid.Color = 15658734
+            Grid.Style = psSolid
+            Intervals.MaxLength = 100
+            Intervals.MinLength = 30
+            Alignment = calBottom
+            AxisPen.Visible = True
+            Marks.LabelBrush.Style = bsClear
+            Minors = <>
+            Title.LabelFont.Style = [fsBold]
+            Title.Visible = True
+            Title.Caption = 'Time, ms'
+            Title.LabelBrush.Style = bsClear
+          end>
+        BackColor = clNone
+        Foot.Brush.Color = clBtnFace
+        Foot.Font.Color = clBlue
+        Legend.Alignment = laBottomCenter
+        Title.Brush.Color = clBtnFace
+        Title.Font.Color = clBlue
+        Title.Text.Strings = (
+          'TAChart'
+        )
+        Toolset = ChartToolset1
+        Align = alClient
+        Color = clNone
+      end
+      object ChartListbox1: TChartListbox
+        Left = 939
+        Height = 590
+        Top = 0
+        Width = 138
+        Chart = Chart
+        Align = alRight
+        ItemHeight = 0
+        TabOrder = 1
+      end
+      object Splitter3: TSplitter
+        Left = 0
+        Height = 590
+        Top = 0
+        Width = 5
+      end
+      object Splitter4: TSplitter
+        Left = 934
+        Height = 590
+        Top = 0
+        Width = 5
+        Align = alRight
+        ResizeAnchor = akRight
+      end
+    end
+    object pgHex: TTabSheet
+      Caption = 'Hex'
+      ClientHeight = 590
+      ClientWidth = 818
+      object Panel2: TPanel
+        Left = 6
+        Height = 67
+        Top = 517
+        Width = 806
+        Align = alBottom
+        AutoSize = True
+        BorderSpacing.Around = 6
+        BevelOuter = bvNone
+        ClientHeight = 67
+        ClientWidth = 806
+        TabOrder = 0
+        object Label2: TLabel
+          AnchorSideTop.Control = edByteValue
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = edByteValue
+          Left = 19
+          Height = 15
+          Top = 21
+          Width = 23
+          Anchors = [akTop, akRight]
+          BorderSpacing.Right = 8
+          Caption = 'Byte'
+          ParentColor = False
+        end
+        object edShortIntValue: TEdit
+          AnchorSideLeft.Control = Label3
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edByteValue
+          AnchorSideTop.Side = asrBottom
+          Left = 50
+          Height = 23
+          Top = 44
+          Width = 96
+          Alignment = taRightJustify
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          TabOrder = 0
+          Text = 'edShortIntValue'
+        end
+        object Label3: TLabel
+          AnchorSideLeft.Control = Panel2
+          AnchorSideTop.Control = edShortIntValue
+          AnchorSideTop.Side = asrCenter
+          Left = 0
+          Height = 15
+          Top = 48
+          Width = 42
+          Caption = 'ShortInt'
+          ParentColor = False
+        end
+        object edByteValue: TEdit
+          AnchorSideLeft.Control = edShortIntValue
+          AnchorSideTop.Control = Label8
+          AnchorSideTop.Side = asrBottom
+          Left = 50
+          Height = 23
+          Top = 17
+          Width = 96
+          Alignment = taRightJustify
+          BorderSpacing.Top = 2
+          TabOrder = 1
+          Text = 'edByteValue'
+        end
+        object Label4: TLabel
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edWordValue
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = edWordValue
+          Left = 184
+          Height = 15
+          Top = 21
+          Width = 29
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 16
+          BorderSpacing.Right = 8
+          Caption = 'Word'
+          ParentColor = False
+        end
+        object edWordValue: TEdit
+          AnchorSideLeft.Control = edSmallIntValue
+          AnchorSideTop.Control = Label9
+          AnchorSideTop.Side = asrBottom
+          Left = 221
+          Height = 23
+          Top = 17
+          Width = 96
+          Alignment = taRightJustify
+          BorderSpacing.Top = 2
+          TabOrder = 2
+          Text = 'edWordValue'
+        end
+        object Label5: TLabel
+          AnchorSideLeft.Control = edShortIntValue
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edSmallIntValue
+          AnchorSideTop.Side = asrCenter
+          Left = 170
+          Height = 15
+          Top = 48
+          Width = 43
+          BorderSpacing.Left = 24
+          Caption = 'SmallInt'
+          ParentColor = False
+        end
+        object edSmallIntValue: TEdit
+          AnchorSideLeft.Control = Label5
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edWordValue
+          AnchorSideTop.Side = asrBottom
+          Left = 221
+          Height = 23
+          Top = 44
+          Width = 96
+          Alignment = taRightJustify
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          TabOrder = 3
+          Text = 'edSmallIntValue'
+        end
+        object Label6: TLabel
+          AnchorSideLeft.Control = edSmallIntValue
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edLongIntValue
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = Label7
+          AnchorSideRight.Side = asrBottom
+          Left = 356
+          Height = 15
+          Top = 48
+          Width = 41
+          Anchors = [akTop, akRight]
+          BorderSpacing.Left = 24
+          Caption = 'LongInt'
+          ParentColor = False
+        end
+        object edLongIntValue: TEdit
+          AnchorSideLeft.Control = Label6
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edWordValue
+          AnchorSideTop.Side = asrBottom
+          Left = 405
+          Height = 23
+          Top = 44
+          Width = 96
+          Alignment = taRightJustify
+          BorderSpacing.Left = 8
+          BorderSpacing.Top = 4
+          TabOrder = 4
+          Text = 'edLongIntValue'
+        end
+        object Label7: TLabel
+          AnchorSideLeft.Control = edWordValue
+          AnchorSideLeft.Side = asrBottom
+          AnchorSideTop.Control = edLongWordValue
+          AnchorSideTop.Side = asrCenter
+          AnchorSideRight.Control = edLongWordValue
+          Left = 341
+          Height = 15
+          Top = 19
+          Width = 56
+          BorderSpacing.Left = 24
+          BorderSpacing.Right = 8
+          Caption = 'LongWord'
+          ParentColor = False
+        end
+        object edLongWordValue: TEdit
+          AnchorSideLeft.Control = edLongIntValue
+          AnchorSideTop.Control = Label10
+          AnchorSideTop.Side = asrBottom
+          Left = 405
+          Height = 23
+          Top = 15
+          Width = 96
+          Alignment = taRightJustify
+          TabOrder = 5
+          Text = 'edLongWordValue'
+        end
+        object Label8: TLabel
+          AnchorSideLeft.Control = edByteValue
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = Panel2
+          Left = 84
+          Height = 15
+          Top = 0
+          Width = 28
+          Caption = '8 bits'
+          ParentColor = False
+        end
+        object Label9: TLabel
+          AnchorSideLeft.Control = edWordValue
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = Panel2
+          Left = 252
+          Height = 15
+          Top = 0
+          Width = 34
+          Caption = '16 bits'
+          ParentColor = False
+        end
+        object Label10: TLabel
+          AnchorSideLeft.Control = edLongWordValue
+          AnchorSideLeft.Side = asrCenter
+          AnchorSideTop.Control = Panel2
+          Left = 436
+          Height = 15
+          Top = 0
+          Width = 34
+          Caption = '32 bits'
+          ParentColor = False
+        end
+      end
+    end
+  end
+  object Splitter1: TSplitter
+    Left = 322
+    Height = 630
+    Top = 0
+    Width = 5
+  end
+  object ImageList: TImageList
+    left = 136
+    top = 136
+    Bitmap = {
+      4C7A020000001000000010000000F10200000000000078DA9594EB4B937114C7
+      7F7F48AF2588420ADF4551AF82DE446F22B22C354388828AB0BC356F53A7DBBC
+      ACB9962BD3BC67595642798B2CEF173453E7A534CD397553B7356F3B9DF344F0
+      9CED69D88B0FE7C0F97CC7C3C3F31D0008404466CF2544B54BD0ED96727F11EA
+      AE947A3740DD5A70C82117E1F98CCEB4DA55808A255F50C82117E1F9B44F1955
+      2B3B5066DB0E0A39E4223C9FFA31ABDCBE0D25F35B4121875C84E7556D9AD285
+      2D289EDD080A39E4223C9FDCACB5CC6D40D1B42728253F37815C91D4C4F389EF
+      F2CCDF7F41A1D5F54F2C3FBC10DF3A05E42287583EBEB1D038E501FDE89A2274
+      8B6B9A90F0F9F01DA2CFF2775E1BF3C75DA019762A42B7D867FDD2F47AD7817C
+      96BF5DFF403BB206EA816545E81653DD234DA7731EC867F95B75C5D9434E48E9
+      B52B42B7C8F20E69DA6C56209FE56FD43C560F3820B9CBA608DD224ADBA5E9EB
+      3C06E4B3FCD5D2CAB4BE1548F8BCA008DDCE989BA4E97A7300C867F928434346
+      BF1354DDCB8AD0EDA4AE5E9AE48A68E351963F9FA313E19A965D416E94817F3F
+      FFDB7F7540FF5333275C70B1D506112D8B706FC8050F6777E0C93C30CA17A5FE
+      A706F43FBD239DBA5DE3F08161C60BD73A97E144E518144DF818257328A38BF8
+      F5BF5D2DEF7F35EEC74B06C168DD613C9AF501B908CFA77CC896F79FF6C3C5FD
+      707F7C9B6199C16F1F5DC4AFBF2DB9F2FED31E56D80E85A39B0CF334FE7FA08B
+      1DF6EFAF5EDE7FDA0FEA5B217FC4CB304D6E527FF54AFD95F79FF6D0DCF7A01F
+      F6308CD60DE5FEC63518E5FDA77D7FD65BD00DB91986312FB8DD2B403EEFEF0B
+      B3BCFFB4EF4B7F05B983EB8C82AF1EB0DB27817C96BF596B91F79FF6BD29CF41
+      D3BFCAC8FBE2FED33FF459FE7A4599BCFFB48724D540769F93A1C3EF52EA1FFA
+      2C1F637AA91E74B0BE872456053CBF7ED80DE48A2BE6232C7F21571B96D7B41A
+      DB38B9A9EA5E927A8E5D7360D79A0340177F43F8F55788CBA653D86BD39EBB55
+      ADA79FF67E13E7B2DA101100B94AF968A3109105F82CDA50119E9320CEAAF391
+      A0F9DF56BC91C9
+    }
+  end
+  object ChartToolset1: TChartToolset
+    left = 511
+    top = 261
+    object ChartToolset1ZoomDragTool1: TZoomDragTool
+      Shift = [ssLeft]
+      LimitToExtent = [zdLeft, zdUp, zdRight, zdDown]
+      Brush.Style = bsClear
+    end
+    object ChartToolset1PanDragTool1: TPanDragTool
+      Shift = [ssRight]
+      LimitToExtent = [pdLeft, pdUp, pdRight, pdDown]
+    end
+    object ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool
+      LimitToExtent = [zdLeft, zdUp, zdRight, zdDown]
+    end
+  end
+end
