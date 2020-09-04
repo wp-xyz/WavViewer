@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ShellCtrls,
-  ComCtrls, StdCtrls, TAGraph, TASeries, TATools, TAChartListbox, TADataTools,
-  MPHexEditor, wvWav;
+  ComCtrls, StdCtrls, Buttons, TAGraph, TASeries, TATools, TAChartListbox,
+  TADataTools, MPHexEditor, wvWav;
 
 type
 
@@ -19,6 +19,8 @@ type
     ChartToolset1: TChartToolset;
     DistanceTool: TDataPointDistanceTool;
     PanDragTool: TPanDragTool;
+    ButtonPanel: TPanel;
+    btnSaveAsCSV: TSpeedButton;
     ZoomDragTool: TZoomDragTool;
     ZoomMouseWheelTool: TZoomMouseWheelTool;
     edAudioFormat: TEdit;
@@ -65,6 +67,7 @@ type
     pgChart: TTabSheet;
     pgHex: TTabSheet;
     Splitter4: TSplitter;
+    procedure btnSaveAsCSVClick(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -82,6 +85,7 @@ type
     function ReadHeader(AStream: TStream): Boolean;
     function ReadSamples(AStream: TStream): Boolean;
     procedure ResetDisplay;
+    procedure SaveAsCSV(AFileName: String);
 
     procedure HexSelectionChangedHandler(Sender: TObject);
 
@@ -101,6 +105,7 @@ implementation
 
 uses
   IniFiles,
+  TACustomSeries,
   wvGlobal, wvUtils;
 
 const
@@ -111,6 +116,16 @@ const
 
 
 { TMainForm }
+
+procedure TMainForm.btnSaveAsCSVClick(Sender: TObject);
+var
+  fn: String;
+begin
+  fn := ShellListview.GetPathFromItem(ShellListview.Selected);
+  fn := ChangeFileExt(fn, '.txt');
+  SaveAsCSV(fn);
+end;
+
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
@@ -470,6 +485,43 @@ begin
 end;
 
 
+procedure TMainForm.SaveAsCSV(AFileName: String);
+const
+  SEPARATOR = ';';
+var
+  L: TStringList;
+  s: String;
+  i, j: Integer;
+  n: Integer;
+  fs: TFormatSettings;
+begin
+  fs := DefaultFormatSettings;
+  fs.DecimalSeparator := '.';
+
+  L := TStringList.Create;
+  try
+    s := 'Time (ms)';
+    for j := 1 to FHeader.NumChannels do
+      s := s + SEPARATOR + 'Channel ' + IntToStr(j);
+    L.Add(s);
+
+    n := TChartSeries(Chart.Series[0]).Count;
+    for i := 0 to n-1 do
+    begin
+      s := FormatFloat('0.000', TChartSeries(Chart.Series[0]).GetXValue(i), fs);
+      for j := 0 to FHeader.NumChannels - 1 do
+        s := s + SEPARATOR + FormatFloat('0.000', TChartSeries(Chart.Series[j]).GetYValue(i), fs);
+      L.Add(s);
+    end;
+
+    L.SaveToFile(AFileName);
+    MessageDlg(Format('Sample values saved as "%s"', [AFileName]), mtInformation, [mbOK], 0);
+  finally
+    L.Free;
+  end;
+end;
+
+
 procedure TMainForm.ShellListViewSelectItem(Sender: TObject; Item: TListItem;
   Selected: Boolean);
 var
@@ -483,15 +535,18 @@ begin
   end;
 end;
 
+
 procedure TMainForm.ShellTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
 begin
   Node.ImageIndex := 0;
 end;
 
+
 procedure TMainForm.ShellTreeViewGetSelectedIndex(Sender: TObject; Node: TTreeNode);
 begin
   Node.SelectedIndex := 1;
 end;
+
 
 procedure TMainForm.WriteIni;
 var
@@ -515,6 +570,7 @@ begin
     ini.Free;
   end;
 end;
+
 
 end.
 
