@@ -7,6 +7,7 @@ object MainForm: TMainForm
   Caption = 'MainForm'
   ClientHeight = 630
   ClientWidth = 1418
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDropFiles = FormDropFiles
   LCLVersion = '2.1.0.0'
@@ -65,17 +66,17 @@ object MainForm: TMainForm
       ResizeAnchor = akBottom
     end
   end
-  object PageControl1: TPageControl
+  object PageControl: TPageControl
     Left = 327
     Height = 618
     Top = 6
     Width = 1085
-    ActivePage = pgHex
+    ActivePage = pgHeader
     Align = alClient
     BorderSpacing.Top = 6
     BorderSpacing.Right = 6
     BorderSpacing.Bottom = 6
-    TabIndex = 2
+    TabIndex = 0
     TabOrder = 1
     object pgHeader: TTabSheet
       Caption = 'Header'
@@ -289,10 +290,10 @@ object MainForm: TMainForm
       ClientHeight = 590
       ClientWidth = 1077
       object Chart: TChart
-        Left = 5
+        Left = 0
         Height = 590
         Top = 0
-        Width = 929
+        Width = 934
         AxisList = <        
           item
             Grid.Color = 15658734
@@ -333,7 +334,7 @@ object MainForm: TMainForm
         Align = alClient
         Color = clNone
       end
-      object ChartListbox1: TChartListbox
+      object ChartListbox: TChartListbox
         Left = 939
         Height = 590
         Top = 0
@@ -342,12 +343,6 @@ object MainForm: TMainForm
         Align = alRight
         ItemHeight = 0
         TabOrder = 1
-      end
-      object Splitter3: TSplitter
-        Left = 0
-        Height = 590
-        Top = 0
-        Width = 5
       end
       object Splitter4: TSplitter
         Left = 934
@@ -615,8 +610,8 @@ object MainForm: TMainForm
     Width = 5
   end
   object ImageList: TImageList
-    left = 136
-    top = 136
+    Left = 136
+    Top = 136
     Bitmap = {
       4C7A020000001000000010000000F10200000000000078DA9594EB4B937114C7
       7F7F48AF2588420ADF4551AF82DE446F22B22C354388828AB0BC356F53A7DBBC
@@ -646,19 +641,32 @@ object MainForm: TMainForm
     }
   end
   object ChartToolset1: TChartToolset
-    left = 511
-    top = 261
-    object ChartToolset1ZoomDragTool1: TZoomDragTool
+    Left = 511
+    Top = 261
+    object ZoomDragTool: TZoomDragTool
       Shift = [ssLeft]
       LimitToExtent = [zdLeft, zdUp, zdRight, zdDown]
       Brush.Style = bsClear
     end
-    object ChartToolset1PanDragTool1: TPanDragTool
+    object PanDragTool: TPanDragTool
       Shift = [ssRight]
       LimitToExtent = [pdLeft, pdUp, pdRight, pdDown]
     end
-    object ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool
+    object ZoomMouseWheelTool: TZoomMouseWheelTool
       LimitToExtent = [zdLeft, zdUp, zdRight, zdDown]
+    end
+    object DistanceTool: TDataPointDistanceTool
+      Shift = [ssCtrl, ssLeft]
+      DrawingMode = tdmNormal
+      Marks.Format = '%0:.3f'
+      Marks.LabelBrush.Color = clSkyBlue
+      Marks.LinkPen.Visible = False
+      MeasureMode = cdmOnlyX
+      Options = [dpdoClipping]
+      PointerEnd.VertSize = 9999
+      PointerEnd.Visible = True
+      PointerStart.VertSize = 9999
+      PointerStart.Visible = True
     end
   end
 end

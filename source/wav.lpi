@@ -55,6 +55,11 @@
         <IsPartOfProject Value="True"/>
         <UnitName Value="wvGlobal"/>
       </Unit>
+      <Unit>
+        <Filename Value="wvutils.pas"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wvUtils"/>
+      </Unit>
     </Units>
   </ProjectOptions>
   <CompilerOptions>
@@ -69,6 +74,9 @@
       <UnitOutputDirectory Value="..\ppu\$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
+      <Debugging>
+        <DebugInfoType Value="dsDwarf2Set"/>
+      </Debugging>
       <Options>
         <Win32>
           <GraphicApplication Value="True"/>

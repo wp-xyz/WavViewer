@@ -6,8 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ShellCtrls,
-  ComCtrls, StdCtrls, TAGraph, TASeries, TATools, TAChartListbox, MPHexEditor,
-  wvWav;
+  ComCtrls, StdCtrls, TAGraph, TASeries, TATools, TAChartListbox, TADataTools,
+  MPHexEditor, wvWav;
 
 type
 
@@ -15,11 +15,12 @@ type
 
   TMainForm = class(TForm)
     Chart: TChart;
-    ChartListbox1: TChartListbox;
+    ChartListbox: TChartListbox;
     ChartToolset1: TChartToolset;
-    ChartToolset1PanDragTool1: TPanDragTool;
-    ChartToolset1ZoomDragTool1: TZoomDragTool;
-    ChartToolset1ZoomMouseWheelTool1: TZoomMouseWheelTool;
+    DistanceTool: TDataPointDistanceTool;
+    PanDragTool: TPanDragTool;
+    ZoomDragTool: TZoomDragTool;
+    ZoomMouseWheelTool: TZoomMouseWheelTool;
     edAudioFormat: TEdit;
     edBlockAlign: TEdit;
     edBitsPerSample: TEdit;
@@ -53,7 +54,7 @@ type
     lblNumChannels: TLabel;
     lblSampleRate: TLabel;
     lblByteRate: TLabel;
-    PageControl1: TPageControl;
+    PageControl: TPageControl;
     Panel1: TPanel;
     Panel2: TPanel;
     ShellListView: TShellListView;
@@ -63,8 +64,8 @@ type
     pgHeader: TTabSheet;
     pgChart: TTabSheet;
     pgHex: TTabSheet;
-    Splitter3: TSplitter;
     Splitter4: TSplitter;
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
     procedure ShellListViewSelectItem(Sender: TObject; Item: TListItem;
@@ -83,6 +84,9 @@ type
     procedure ResetDisplay;
 
     procedure HexSelectionChangedHandler(Sender: TObject);
+
+    procedure ReadIni;
+    procedure WriteIni;
   public
     procedure OpenWavFile(const AFileName: String);
 
@@ -96,7 +100,8 @@ implementation
 {$R *.lfm}
 
 uses
-  wvGlobal;
+  IniFiles,
+  wvGlobal, wvUtils;
 
 const
   COLORS: array[0..3] of TColor = (clRed, clBlue, clBlack, clFuchsia);
@@ -123,13 +128,22 @@ begin
   FHexEditor.BytesPerColumn := 1;
   FHexEditor.OnSelectionChanged := @HexSelectionChangedHandler;
 
-  ChartToolset1ZoomMouseWheelTool1.Zoomfactor := 1.1;
-  ChartToolset1ZoomMouseWheelTool1.ZoomRatio := 1.0/ChartToolset1ZoomMouseWheelTool1.Zoomfactor;
+  ZoomMouseWheelTool.Zoomfactor := 1.1;
+  ZoomMouseWheelTool.ZoomRatio := 1.0/ZoomMouseWheelTool.Zoomfactor;
+
+  ReadIni;
 
   if (ParamCount > 0) then begin
     ShellListView.Root := ParamStr(1);
     ShellTreeView.Path := ParamStr(1);
   end;
+end;
+
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  if CanClose then
+    WriteIni;
 end;
 
 
@@ -261,6 +275,47 @@ begin
   end;
 
   Result := true;
+end;
+
+
+procedure TMainForm.ReadIni;
+var
+  ini: TCustomIniFile;
+  L,T,W,H: Integer;
+  rct: TRect;
+  fn: String;
+begin
+  ini := CreateIni;
+  try
+    L := ini.ReadInteger('MainForm', 'Left', Left);
+    T := ini.ReadInteger('MainForm', 'Top', Top);
+    W := ini.ReadInteger('MainForm', 'Width', Width);
+    H := ini.ReadInteger('MainForm', 'Height', Height);
+    rct := Screen.WorkAreaRect;
+    if L + W > rct.Right then L := rct.Right - W;
+    if L < rct.Left then L := rct.Left;
+    if T + H > rct.Bottom then T := rct.Bottom - H;
+    if T < rct.Top then T := rct.Top;
+    SetBounds(L, T, W, H);
+
+    FilesPanel.Width := ini.ReadInteger('MainForm', 'FilesPanel_Width', FilesPanel.Width);
+    ChartListbox.Width := ini.ReadInteger('MainForm', 'ChartListbox_Width', ChartListbox.Width);
+
+    PageControl.ActivePageIndex := ini.ReadInteger('MainForm', 'PageControl', 0);
+
+    ShellListView.Root := ini.ReadString('Settings', 'Directory', '');
+    ShellTreeView.Path := ShellListView.Root;
+
+    fn := ini.ReadString('Settings','FileName', '');
+    if (fn <> '') then
+    begin
+      ShellListView.Selected := ShellListView.FindCaption(0, ExtractFileName(fn), true, true, false);
+      ShellTreeview.MakeSelectionVisible;
+      OpenWavFile(fn);
+    end;
+  finally
+    ini.Free;
+  end;
 end;
 
 
@@ -436,6 +491,29 @@ end;
 procedure TMainForm.ShellTreeViewGetSelectedIndex(Sender: TObject; Node: TTreeNode);
 begin
   Node.SelectedIndex := 1;
+end;
+
+procedure TMainForm.WriteIni;
+var
+  ini: TCustomIniFile;
+begin
+  ini := CreateIni;
+  try
+    ini.WriteInteger('MainForm', 'Left', Left);
+    ini.WriteInteger('MainForm', 'Top', Top);
+    ini.WriteInteger('MainForm', 'Width', Width);
+    ini.WriteInteger('MainForm', 'Height', Height);
+
+    ini.WriteInteger('MainForm', 'FilesPanel_Width', FilesPanel.Width);
+    ini.WriteInteger('MainForm', 'ChartListbox_Width', ChartListbox.Width);
+
+    ini.WriteInteger('MainForm', 'PageControl', PageControl.ActivePageIndex);
+
+    ini.WriteString('Settings', 'Directory', ShellListView.Root);
+    ini.WriteString('Settings', 'FileName', ShellListview.GetPathFromItem(ShellListview.Selected));
+  finally
+    ini.Free;
+  end;
 end;
 
 end.
