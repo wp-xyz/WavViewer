@@ -7,7 +7,7 @@ interface
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ExtCtrls, ShellCtrls,
   ComCtrls, StdCtrls, Buttons, TAGraph, TASeries, TATools, TAChartListbox,
-  TADataTools, MPHexEditor, wvWav;
+  TADataTools, TANavigation, MPHexEditor, wvWav;
 
 type
 
@@ -16,11 +16,14 @@ type
   TMainForm = class(TForm)
     Chart: TChart;
     ChartListbox: TChartListbox;
+    ChartNavScrollBar1: TChartNavScrollBar;
     ChartToolset1: TChartToolset;
+    cbShowDataPoints: TCheckBox;
     DistanceTool: TDataPointDistanceTool;
     PanDragTool: TPanDragTool;
     ButtonPanel: TPanel;
     btnSaveAsCSV: TSpeedButton;
+    btnZoom10ms: TSpeedButton;
     ZoomDragTool: TZoomDragTool;
     ZoomMouseWheelTool: TZoomMouseWheelTool;
     edAudioFormat: TEdit;
@@ -68,6 +71,8 @@ type
     pgHex: TTabSheet;
     Splitter4: TSplitter;
     procedure btnSaveAsCSVClick(Sender: TObject);
+    procedure btnZoom10msClick(Sender: TObject);
+    procedure cbShowDataPointsChange(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure FormCreate(Sender: TObject);
     procedure FormDropFiles(Sender: TObject; const FileNames: array of string);
@@ -75,7 +80,6 @@ type
       Selected: Boolean);
     procedure ShellTreeViewGetImageIndex(Sender: TObject; Node: TTreeNode);
     procedure ShellTreeViewGetSelectedIndex(Sender: TObject; Node: TTreeNode);
-
   private
     FHeader: TWavFmtSubchunk;
     FFileName: String;
@@ -105,7 +109,7 @@ implementation
 
 uses
   IniFiles,
-  TACustomSeries,
+  TACustomSeries, TAChartUtils,
   wvGlobal, wvUtils;
 
 const
@@ -124,6 +128,25 @@ begin
   fn := ShellListview.GetPathFromItem(ShellListview.Selected);
   fn := ChangeFileExt(fn, '.txt');
   SaveAsCSV(fn);
+end;
+
+procedure TMainForm.btnZoom10msClick(Sender: TObject);
+var
+  ext: TDoubleRect;
+begin
+  ext := Chart.GetFullExtent;
+  ext.b.x := ext.a.x + 10;
+  Chart.LogicalExtent := ext;
+end;
+
+procedure TMainForm.cbShowDataPointsChange(Sender: TObject);
+var
+  i: Integer;
+begin
+  for i := 0 to Chart.SeriesCount-1 do
+    if Chart.Series[i] is TLineSeries then
+      with TLineSeries(Chart.Series[i]) do
+        ShowPoints := cbShowDataPoints.Checked;
 end;
 
 
@@ -172,9 +195,9 @@ end;
 procedure TMainForm.HexSelectionChangedHandler(Sender: TObject);
 var
   P: Int64;
-  b: Byte;
-  w: Word;
-  lw: LongWord;
+  b: Byte = 0;
+  w: Word = 0;
+  lw: LongWord = 0;
 begin
   P := FHexEditor.GetCursorPos;
 
@@ -335,20 +358,26 @@ end;
 
 
 function TMainForm.ReadHeader(AStream: TStream): Boolean;
+var
+  n: Int64;
 begin
   Result := false;
 
-  if AStream.Read(FHeader, SizeOf(FHeader)) <> SizeOf(FHeader) then begin
+  // Read the header
+  n := AStream.Read(FHeader, SizeOf(FHeader));
+
+  // Check the header
+  if n <> SizeOf(FHeader) then begin
     MessageDlg(Format(DAMAGED_FILE_ERROR, [FFileName]), mtError, [mbOK], 0);
     exit;
   end;
-
   if not ((FHeader.ID[0]='f') and (FHeader.ID[1]='m') and (FHeader.ID[2]='t') and (FHeader.ID[3]=' ')) then
   begin
     MessageDlg(Format(WAV_FORMAT_ERROR, [FFileName]), mtError, [mbOK], 0);
     exit;
   end;
 
+  // Fix endianness, if needed
   if FBigEndian then
   begin
     FHeader.SubChunkSize := BEToN(FHeader.SubChunkSize);
@@ -383,13 +412,14 @@ end;
 function TMainForm.ReadSamples(AStream: TStream): Boolean;
 var
   data: TWavDataSubChunk;
-  ser: array of TLineSeries;
+  ser: array of TLineSeries = nil;
   channel: Integer;
   numSamples: Integer;
   sampleCounter: Integer;
   t: Double;
-  buffer8: ShortInt;
-  buffer16: SmallInt;
+  buffer8: ShortInt = 0;
+  buffer16: SmallInt = 0;
+  n: Int64;
   P: Int64;
 
   function IsData: Boolean;
@@ -402,7 +432,13 @@ begin
 
   repeat
     P := AStream.Position;
-    if AStream.Read(data, SizeOf(data)) <> SizeOf(data) then
+    data := Default(TWavDataSubChunk);
+
+    // Read the data subchunk
+    n := AStream.Read(data, SizeOf(data));
+
+    // Check data
+    if n <> SizeOf(data) then
     begin
       MessageDlg(Format(DAMAGED_FILE_ERROR, [FFileName]), mtError, [mbOK], 0);
       exit;
@@ -416,12 +452,14 @@ begin
       data.DataSize := BEToN(data.DataSize);
 
     if IsData then
+      // when current chunk had been the data chunk we're done.
       break
     else
+      // otherwise proceed with the next chunk.
       AStream.Position := P + 8 + data.DataSize;
   until false;
 
-  // Create chart
+  // Create chart series
   Chart.ClearSeries;
   SetLength(ser, FHeader.NumChannels);
   for channel := 0 to FHeader.NumChannels-1 do
@@ -429,18 +467,20 @@ begin
     ser[channel] := TLineSeries.Create(Chart);
     ser[channel].Title := 'Channel ' + IntToStr(channel);
     ser[channel].SeriesColor := COLORS[Chart.SeriesCount mod Length(COLORS)];
+    ser[channel].Pointer.Brush.Color := ser[channel].SeriesColor;
+    ser[channel].Pointer.Pen.Style := psClear;
     ser[channel].ListSource.BeginUpdate;
     Chart.AddSeries(ser[channel]);
   end;
   Chart.Legend.Visible := FHeader.NumChannels > 1;
 
   // Read samples and add them to the chart.
-  numSamples := (data.DataSize * 8) div FHeader.BitsPerSample;
+  // A "sample" contains the signals of all channels at the same time.
+  numSamples := (data.DataSize * 8) div (FHeader.BitsPerSample * FHeader.NumChannels);
   sampleCounter := 0;
   channel := 0;
+  t := 0;
   while (sampleCounter < numSamples) do begin
-    if not odd(samplecounter) then
-      t := sampleCounter/FHeader.SampleRate * 1000;
     case FHeader.BitsPerSample of
        8: begin
             if AStream.Read(buffer8, SizeOf(buffer8)) <> SizeOf(buffer8) then
@@ -460,9 +500,12 @@ begin
             ser[channel].AddXY(t, buffer16);
           end;
     end;
-    inc(channel);
-    if channel = FHeader.NumChannels then channel := 0;
-    inc(sampleCounter);
+    channel := (channel + 1) mod FHeader.NumChannels;
+    if channel = 0 then
+    begin
+      inc(sampleCounter);
+      t := sampleCounter/FHeader.SampleRate * 1000;
+    end;
   end;
 
   for channel := 0 to High(ser) do
@@ -546,7 +589,6 @@ procedure TMainForm.ShellTreeViewGetSelectedIndex(Sender: TObject; Node: TTreeNo
 begin
   Node.SelectedIndex := 1;
 end;
-
 
 procedure TMainForm.WriteIni;
 var
