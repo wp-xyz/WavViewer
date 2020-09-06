@@ -530,7 +530,7 @@ end;
 
 procedure TMainForm.SaveAsCSV(AFileName: String);
 const
-  SEPARATOR = ';';
+  SEPARATOR = #9;
 var
   L: TStringList;
   s: String;
