@@ -243,6 +243,12 @@ procedure TMainForm.OpenWavFile(const AFileName: String);
 var
   stream: TStream;
 begin
+  if not FileExists(AFileName) then
+  begin
+    MessageDlg(Format('File "%s" not found.', [AFileName]), mtError, [mbOK], 0);
+    exit;
+  end;
+
   stream := TMemoryStream.Create;
   try
     FFileName := AFileName;
@@ -607,7 +613,8 @@ begin
     ini.WriteInteger('MainForm', 'PageControl', PageControl.ActivePageIndex);
 
     ini.WriteString('Settings', 'Directory', ShellListView.Root);
-    ini.WriteString('Settings', 'FileName', ShellListview.GetPathFromItem(ShellListview.Selected));
+    if Assigned(ShellListView.Selected) then
+      ini.WriteString('Settings', 'FileName', ShellListview.GetPathFromItem(ShellListview.Selected));
   finally
     ini.Free;
   end;
